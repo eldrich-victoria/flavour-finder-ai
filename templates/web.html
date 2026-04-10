@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendations</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>Restaurant Recommendation System</h2>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/recommend">Recommend</a>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container-center">
+
+        <h2>Restaurant Name</h2>
+
+        <!-- FORM -->
+        <form action="/recommend" method="POST">
+            <input type="text" name="restaurant" placeholder="Enter restaurant name..." required>
+            <br><br>
+            <button type="submit" class="btn" onclick="showLoading()">
+                Click to see the recommendation
+            </button>
+        </form>
+
+        <br><br>
+
+        <!-- ERROR MESSAGE -->
+        {% if error %}
+            <p style="color:red; font-weight:bold;">{{ error }}</p>
+        {% endif %}
+
+        <!-- RESULTS -->
+        {% if results %}
+            <h3>Here is Recommended Restaurants</h3>
+
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Cuisines</th>
+                    <th>Mean Rating</th>
+                    <th>Cost</th>
+                </tr>
+
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.cuisines }}</td>
+                    <td>{{ r['Mean Rating'] }}</td>
+                    <td>₹{{ r.cost }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

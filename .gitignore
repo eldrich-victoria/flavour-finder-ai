@@ -1,0 +1,124 @@
+# -----------------------------
+# 🔒 Virtual Environment
+# -----------------------------
+venv/
+.venv/
+env/
+ENV/
+
+# -----------------------------
+# 📁 Data (IMPORTANT)
+# -----------------------------
+data/
+*.csv
+*.xlsx
+*.json
+*.parquet
+
+# -----------------------------
+# 🧠 ML Models (optional - keep if large)
+# -----------------------------
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# -----------------------------
+# 🧾 Python Cache
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# -----------------------------
+# 🛠️ Logs & Temp Files
+# -----------------------------
+*.log
+*.tmp
+*.swp
+
+# -----------------------------
+# 🧪 Jupyter Notebook
+# -----------------------------
+.ipynb_checkpoints/
+
+# -----------------------------
+# ⚙️ Environment Variables
+# -----------------------------
+.env
+
+# -----------------------------
+# 🖥️ OS Files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# 🧑‍💻 IDE / Editor Files
+# -----------------------------
+.vscode/
+.idea/
+
+# -----------------------------
+# 🚀 Build / Dist
+# -----------------------------
+build/
+dist/
+*.egg-info/
+
+# -----------------------------
+# 🔐 Secrets
+# -----------------------------
+secrets.json
+
+# Virtual Environment
+
+venv/
+.venv/
+env/
+ENV/
+
+# Data
+
+data/
+*.csv
+*.xlsx
+*.json
+*.parquet
+
+# ML Models (optional)
+
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Python cache
+
+**pycache**/
+*.pyc
+
+# Logs
+
+*.log
+
+# Jupyter
+
+.ipynb_checkpoints/
+
+# Env files
+
+.env
+
+# IDE
+
+.vscode/
+.idea/
+
+# OS
+
+.DS_Store
+Thumbs.db

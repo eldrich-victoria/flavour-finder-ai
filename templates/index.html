@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Recommendation System</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>Restaurant Recommendation System</h2>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/recommend">Recommend</a>
+        </div>
+    </div>
+
+    <!-- MAIN SECTION -->
+    <div class="container">
+
+        <!-- LEFT SIDE -->
+        <div class="text-section">
+            <h1>Build recommendation system with ease!!</h1>
+
+            <p>
+                In this age of information overload, people use a variety of strategies to make choices about 
+                what to buy, how to spend their leisure time, and even where to go. Recommendation systems 
+                automate some of these strategies with the goal of providing affordable and relevant suggestions.
+                <br><br>
+                The aim is to create a content-based recommendation system where the user provides a restaurant name. 
+                The system will look at the reviews and features of other restaurants and recommend similar ones 
+                sorted by rating.
+            </p>
+
+            <a href="/recommend">
+                <button class="btn">Test the system</button>
+            </a>
+        </div>
+
+        <!-- RIGHT SIDE (GIF IMAGE) -->
+        <div class="image-section">
+            <img src="{{ url_for('static', filename='images/food.gif') }}" alt="Food GIF">
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
