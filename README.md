@@ -1,102 +1,105 @@
-# restaurant-recommendation-system
-# Restaurant Recommender System
+# 🍽️ Flavour Finder — Restaurant Recommendation System
 
-A Flask-based web application that recommends restaurants similar to a user-selected restaurant using a content-based filtering approach. The project uses cleaned restaurant metadata, converts textual features into vectors with `CountVectorizer`, and ranks similar restaurants with cosine similarity.
+A full-stack web application that recommends restaurants similar to a user-selected restaurant using **content-based filtering**. Built on ~50,000 Bangalore restaurant listings from the Zomato dataset, the system uses NLP-based vectorization (`CountVectorizer`) and **cosine similarity** to find the closest matches — with optional filtering by cuisine, locality, and budget.
 
-## Overview
+## ✨ Key Features
 
-This project demonstrates an end-to-end machine learning workflow for restaurant recommendations:
+- **Content-based recommendation engine** — finds restaurants with similar cuisines and dining styles
+- **Smart search** — searchable dropdown with type-to-filter for 50,000+ restaurant names
+- **Advanced filters** — narrow results by cuisine type, Bangalore locality, and budget range
+- **Memory-efficient design** — computes similarity on-the-fly instead of loading a 4 GB precomputed matrix
+- **Premium dark UI** — glassmorphism, micro-animations, food image carousel, and card-based results
+- **Fully responsive** — optimized layouts for desktop, tablet, and mobile
+- **Client + server validation** — input checking on both sides with user-friendly error states
 
-- Data preparation from a large Zomato dataset
-- Feature engineering using cuisine and restaurant type metadata
-- Model artifact generation in a Jupyter notebook
-- A lightweight Flask web interface for interactive recommendations
+## 🧠 How It Works
 
-The current application loads a preprocessed restaurant dataset from `models/restaurants.pkl`, builds the text vector space at startup, and computes similarity only when a user submits a restaurant name.
+### Training Phase (Notebook)
 
-## Key Features
+1. Load the raw Zomato dataset (`data/zomato.csv`)
+2. Select and clean relevant columns: `name`, `cuisines`, `rate`, `cost`, `rest_type`, `location`
+3. Engineer a `tags` feature by combining `cuisines` + `rest_type` (lowercased)
+4. Vectorize the tags using `CountVectorizer` with 5,000 features and English stop-word removal
+5. Serialize the cleaned DataFrame as `models/restaurants.pkl`
 
-- Content-based recommendation pipeline
-- Flask web application with separate home and recommendation pages
-- Input validation on both client and server sides
-- Memory-conscious runtime design that avoids loading the large precomputed similarity matrix
-- Simple HTML, CSS, and JavaScript frontend for quick local deployment
+### Runtime Phase (Flask App)
 
-## How It Works
+1. Load `restaurants.pkl` at startup
+2. Rebuild the vectorizer and sparse feature matrix in memory
+3. Pre-compute all filter dropdown options (cuisines, locations, budget brackets)
+4. On user request, compute cosine similarity for **only the selected restaurant** (1×N operation)
+5. Apply user-selected filters, return the top 10 matching restaurants
 
-1. The notebook reads `data/zomato.csv`.
-2. It selects and cleans the restaurant metadata columns.
-3. It combines `cuisines` and `rest_type` into a `tags` field.
-4. `CountVectorizer` transforms the tags into feature vectors.
-5. At runtime, the app computes cosine similarity between the selected restaurant and all other restaurants.
-6. The top similar restaurants are returned with cuisine, rating, and cost information.
+## 📊 Exploratory Data Analysis
 
-## Tech Stack
+The EDA notebook (`notebooks/eda.ipynb`) reveals key dataset insights:
 
-- Python
-- Flask
-- Pandas
-- NumPy
-- scikit-learn
-- Jupyter Notebook
-- HTML / CSS / JavaScript
+- **North Indian** is the most common cuisine (~20,000 listings), followed by Chinese and South Indian
+- Restaurant ratings follow a roughly normal distribution centered around **3.7/5.0**
+- Top-rated restaurants score **4.8–4.9** out of 5.0
+- **Cafe Coffee Day** is the most frequently listed chain with 96 outlets across Bangalore
 
-## Project Structure
+EDA visualizations are saved in the `visuals/` directory.
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Backend** | Python, Flask |
+| **ML/NLP** | scikit-learn (`CountVectorizer`, `cosine_similarity`), Pandas, NumPy |
+| **Frontend** | HTML5, CSS3 (custom dark theme), Vanilla JavaScript |
+| **Fonts** | Inter, Playfair Display (Google Fonts) |
+| **EDA** | Jupyter Notebook, Matplotlib, Seaborn |
+
+## 📁 Project Structure
 
 ```text
 restaurant-recommender-system/
-|-- app.py                  # Flask application entry point
-|-- requirements.txt        # Python dependencies
-|-- README.md               # Project documentation
-|-- data/
-|   `-- zomato.csv          # Source dataset
-|-- models/
-|   |-- restaurants.pkl     # Preprocessed restaurant records used by the app
-|   `-- similarity.pkl      # Legacy precomputed similarity matrix (very large)
-|-- notebooks/
-|   `-- model.ipynb         # Data cleaning and model-building notebook
-|-- static/
-|   |-- css/main.css        # Styles
-|   |-- js/main.js          # Client-side validation and loading state
-|   `-- images/             # UI assets
-`-- templates/
-    |-- index.html          # Landing page
-    `-- web.html            # Recommendation form and results page
+├── app.py                      # Flask server — routes, recommendation logic, API
+├── requirements.txt            # Python dependencies
+├── README.md                   # Project documentation
+│
+├── data/
+│   └── zomato.csv              # Source Zomato dataset (~574 MB)
+│
+├── models/
+│   ├── restaurants.pkl         # Preprocessed restaurant DataFrame (used at runtime)
+│   └── similarity.pkl          # Precomputed similarity matrix (legacy, not used at runtime)
+│
+├── notebooks/
+│   ├── eda.ipynb               # Exploratory Data Analysis with visualizations
+│   └── model.ipynb             # Data cleaning, feature engineering, model building
+│
+├── static/
+│   ├── css/main.css            # Premium dark-theme design system (~970 lines)
+│   ├── js/main.js              # Carousel, searchable select, form validation, scroll effects
+│   └── images/                 # Food carousel images and UI assets
+│
+├── templates/
+│   ├── index.html              # Landing page with hero section and carousel
+│   └── web.html                # Recommendation form, filters, and results cards
+│
+└── visuals/                    # EDA chart outputs (cuisine frequency, ratings, etc.)
 ```
 
-## Dataset and Model Artifacts
-
-### Dataset
-
-- Source file: `data/zomato.csv`
-- The dataset is relatively large and may not be ideal for lightweight repository hosting if bandwidth or clone size is a concern.
-
-### Model Files
-
-- `models/restaurants.pkl` is the primary artifact used by the Flask app.
-- `models/similarity.pkl` is generated in the notebook, but the current application does not use it.
-- Because `similarity.pkl` is several gigabytes in size, it is better treated as an optional offline artifact instead of a required runtime dependency.
-
-## Installation
+## 🚀 Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/restaurant-recommender-system.git
-cd restaurant-recommender-system
+git clone https://github.com/eldrich-victoria/restaurant-recommendation-system.git
+cd restaurant-recommendation-system
 ```
 
 ### 2. Create and activate a virtual environment
 
-On Windows:
-
+**Windows:**
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-On macOS/Linux:
-
+**macOS / Linux:**
 ```bash
 python -m venv .venv
 source .venv/bin/activate
@@ -108,111 +111,85 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Running the Application
+### 4. Ensure model files exist
 
-Start the Flask server with:
+The app requires `models/restaurants.pkl` to run. If it's missing, regenerate it by running the `notebooks/model.ipynb` notebook (requires `data/zomato.csv`).
+
+## ▶️ Running the Application
 
 ```bash
 python app.py
 ```
 
-Then open your browser and visit:
+Then open your browser and visit: **http://127.0.0.1:5000/**
 
-```text
-http://127.0.0.1:5000/
-```
+## 📖 Usage
 
-## Usage
+1. **Home page** → Browse the landing page with the food carousel and learn how the system works
+2. **Recommend page** → Click "Get Recommendations" or navigate to `/recommend`
+3. **Search** → Type at least 2 characters in the restaurant search box to filter the dropdown
+4. **Filter** → Optionally narrow results by cuisine, Bangalore locality, or budget bracket
+5. **Submit** → Click "Get Recommendations" to view the top 10 similar restaurants as styled cards
+6. **Review** → Each card shows the restaurant name, cuisine tags, rating (color-coded), cost for two, and location
 
-1. Open the home page.
-2. Navigate to the recommendation page.
-3. Enter a restaurant name available in the trained dataset.
-4. Submit the form.
-5. Review the top recommended restaurants shown in the results table.
-
-## Application Flow
-
-### Training / Artifact Generation
-
-The notebook in `notebooks/model.ipynb` performs:
-
-- dataset loading
-- column selection and renaming
-- missing-value handling
-- cost and rating normalization
-- tag generation from `cuisines` and `rest_type`
-- vectorization with `CountVectorizer`
-- serialization of `restaurants.pkl` and `similarity.pkl`
-
-### Runtime Recommendation Logic
-
-The Flask app in `app.py` performs:
-
-- loading `restaurants.pkl`
-- rebuilding the vectorizer and sparse feature matrix at startup
-- mapping restaurant names to dataframe indices
-- computing cosine similarity for the requested restaurant only
-- returning the top 10 similar restaurants
-
-## Current Endpoints
+## 🔗 API Endpoints
 
 | Route | Method | Description |
-|------|--------|-------------|
-| `/` | `GET` | Landing page |
-| `/recommend` | `GET` | Recommendation form page |
-| `/recommend` | `POST` | Returns recommendation results for the submitted restaurant |
+|-------|--------|-------------|
+| `/` | `GET` | Landing page with hero section and food carousel |
+| `/recommend` | `GET` | Recommendation form with search and filter dropdowns |
+| `/recommend` | `POST` | Process form submission and return recommendation results |
+| `/api/restaurants` | `GET` | JSON autocomplete API — accepts `?q=` query param (min 2 chars, returns top 20 matches) |
 
-## Example Recommendation Output
+## 📋 Recommendation Output
 
-Each recommendation record includes:
+Each recommendation card displays:
 
-- Restaurant name
-- Cuisines
-- Mean rating
-- Approximate cost
+| Field | Description |
+|-------|-------------|
+| **Name** | Restaurant name |
+| **Cuisines** | Up to 4 cuisine tags as pill badges |
+| **Rating** | Mean rating out of 5.0 (green ≥ 3.8, amber ≥ 3.0, red < 3.0) |
+| **Cost** | Approximate cost for two (₹) |
+| **Location** | Bangalore locality |
 
-## Known Limitations
+## 🎨 Frontend Design
 
-- Recommendations depend only on cuisine and restaurant type tags.
-- Restaurant-name matching is exact; partial matching and typo tolerance are not implemented.
-- The application does not currently expose an API layer despite `FastAPI` and `uvicorn` appearing in `requirements.txt`.
-- Some frontend files contain encoding artifacts that may need cleanup for production presentation.
-- `debug=True` is enabled in `app.py`, which is suitable for development but not for production deployment.
+The UI features a premium dark-mode design system:
 
-## Suggested Improvements
+- **Color palette** — Deep black base (#0a0a0f) with amber/gold accents (#f59e0b)
+- **Typography** — Playfair Display for headings, Inter for body text
+- **Effects** — Glassmorphism panels, backdrop blur, glow shadows, gradient accents
+- **Animations** — `fadeInUp` entrance animations, staggered card reveals, carousel crossfade, scroll-triggered step cards
+- **Responsiveness** — Three breakpoints (1024px, 768px, 480px) for full device coverage
 
-- Add fuzzy search or autocomplete for restaurant names
-- Remove unused dependencies from `requirements.txt`
-- Add a proper production configuration for Flask
-- Exclude or externally host oversized artifacts such as `data/zomato.csv` and `models/similarity.pkl`
-- Add screenshots or a demo GIF in the README
-- Add unit tests for recommendation logic and route behavior
-- Provide Docker support and environment-based configuration
+## ⚠️ Known Limitations
 
-## Requirements Notes
+- Recommendations are based solely on cuisine and restaurant type tags — user preferences, reviews, and location proximity are not factored in
+- Restaurant name matching requires an exact selection from the dropdown; free-text input with typos will not match
+- The `similarity.pkl` file (4.2 GB) is generated by the notebook but is **not used** by the Flask app at runtime
+- The application runs with `debug=True`, which is suitable for development but not for production deployment
 
-The current `requirements.txt` includes a duplicated `scikit-learn` entry and packages that are not used by the Flask app at runtime. If you plan to publish this repository, consider trimming dependencies to only what is required for training and serving.
+## 🔮 Future Scope
 
-## Future Scope
+- Hybrid recommendation model combining content-based and collaborative filtering
+- User accounts with personalized recommendation history
+- Location-aware recommendations using geolocation
+- REST API layer for mobile app integration
+- Deployment to a cloud platform (AWS, GCP, or Heroku)
+- Docker containerization for portable deployment
+- Unit and integration tests for recommendation logic and routes
 
-- Personalized recommendations using user preferences
-- Hybrid recommendation models
-- Ranking by location, budget, or cuisine filters
-- REST API support for frontend or mobile clients
-- Deployment to a cloud platform
+## 🤝 Contributing
 
-## Contributing
-
-Contributions are welcome. To contribute:
+Contributions are welcome! To contribute:
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a pull request
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m "Add your feature"`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
 
-## License
+## 👤 Author
 
-Add your preferred license here, for example `MIT`, `Apache-2.0`, or a custom academic/project license.
-
-## Author
-Eldrich Domnick Victoria
+**Eldrich Domnick Victoria**
