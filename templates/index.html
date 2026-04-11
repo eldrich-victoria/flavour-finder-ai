@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Restaurant Recommendation System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover your next favorite restaurant with our AI-powered recommendation system. Get personalized suggestions based on cuisine, location, and budget.">
+    <title>Restaurant Recommender — Find Your Perfect Meal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -10,42 +17,124 @@
 <body>
 
     <!-- NAVBAR -->
-    <div class="navbar">
-        <h2>Restaurant Recommendation System</h2>
+    <nav class="navbar" id="mainNav">
+        <div class="navbar-brand">
+            <span class="brand-icon">🍽️</span>
+            <h2>Flavour Finder</h2>
+        </div>
         <div class="nav-links">
-            <a href="/">Home</a>
+            <a href="/" class="active">Home</a>
             <a href="/recommend">Recommend</a>
         </div>
-    </div>
+    </nav>
 
-    <!-- MAIN SECTION -->
-    <div class="container">
+    <!-- HERO SECTION -->
+    <section class="hero">
 
-        <!-- LEFT SIDE -->
-        <div class="text-section">
-            <h1>Build recommendation system with ease!!</h1>
+        <!-- LEFT — TEXT -->
+        <div class="hero-text">
+            <div class="hero-tag">
+                <span></span>
+                AI-Powered Recommendations
+            </div>
+
+            <h1>
+                Discover Your Next <span class="highlight">Favourite Restaurant</span>
+            </h1>
 
             <p>
-                In this age of information overload, people use a variety of strategies to make choices about 
-                what to buy, how to spend their leisure time, and even where to go. Recommendation systems 
-                automate some of these strategies with the goal of providing affordable and relevant suggestions.
-                <br><br>
-                The aim is to create a content-based recommendation system where the user provides a restaurant name. 
-                The system will look at the reviews and features of other restaurants and recommend similar ones 
-                sorted by rating.
+                Overwhelmed by choices? Our intelligent recommendation engine analyzes
+                thousands of restaurants across Bangalore — considering cuisine, ratings,
+                and dining style — to serve you perfectly matched suggestions.
             </p>
 
-            <a href="/recommend">
-                <button class="btn">Test the system</button>
-            </a>
+            <div class="hero-actions">
+                <a href="/recommend">
+                    <button class="btn-primary" id="heroGetStarted">
+                        Get Recommendations
+                        <span>→</span>
+                    </button>
+                </a>
+                <a href="#howItWorks">
+                    <button class="btn-secondary" id="heroLearnMore">
+                        How It Works
+                    </button>
+                </a>
+            </div>
         </div>
 
-        <!-- RIGHT SIDE (GIF IMAGE) -->
-        <div class="image-section">
-            <img src="{{ url_for('static', filename='images/food.gif') }}" alt="Food GIF">
+        <!-- RIGHT — CAROUSEL -->
+        <div class="hero-carousel">
+            <div class="carousel-container" id="heroCarousel">
+                <div class="carousel-slide active">
+                    <img src="{{ url_for('static', filename='images/food_curry.png') }}" alt="Indian Curry">
+                    <div class="carousel-overlay"></div>
+                    <span class="carousel-label">🍛 Indian Cuisine</span>
+                </div>
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='images/food_pizza.png') }}" alt="Italian Pizza">
+                    <div class="carousel-overlay"></div>
+                    <span class="carousel-label">🍕 Italian Classics</span>
+                </div>
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='images/food_dimsum.png') }}" alt="Chinese Dim Sum">
+                    <div class="carousel-overlay"></div>
+                    <span class="carousel-label">🥟 Chinese Delights</span>
+                </div>
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='images/food_burger.png') }}" alt="Gourmet Burger">
+                    <div class="carousel-overlay"></div>
+                    <span class="carousel-label">🍔 American Favourites</span>
+                </div>
+                <div class="carousel-slide">
+                    <img src="{{ url_for('static', filename='images/food_dessert.png') }}" alt="Chocolate Dessert">
+                    <div class="carousel-overlay"></div>
+                    <span class="carousel-label">🍫 Sweet Endings</span>
+                </div>
+            </div>
+            <div class="carousel-dots" id="carouselDots">
+                <div class="carousel-dot active" data-index="0"></div>
+                <div class="carousel-dot" data-index="1"></div>
+                <div class="carousel-dot" data-index="2"></div>
+                <div class="carousel-dot" data-index="3"></div>
+                <div class="carousel-dot" data-index="4"></div>
+            </div>
         </div>
 
-    </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works" id="howItWorks">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Three simple steps to your perfect meal</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <span class="step-icon">🔍</span>
+                <h3>Select a Restaurant</h3>
+                <p>Choose a restaurant you already love from our extensive Bangalore database of 50,000+ listings.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <span class="step-icon">🎯</span>
+                <h3>Apply Filters</h3>
+                <p>Narrow down by your preferred cuisine, locality, and budget to get perfectly tailored results.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <span class="step-icon">⭐</span>
+                <h3>Get Recommendations</h3>
+                <p>Our AI analyzes cuisine styles, ratings, and dining types to find the most similar restaurants for you.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span>© 2026 Flavour Finder — Restaurant Recommendation System</span>
+        <span>Built with ❤️ using Flask & Machine Learning</span>
+    </footer>
 
     <!-- JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

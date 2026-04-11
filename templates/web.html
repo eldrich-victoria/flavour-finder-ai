@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Recommendations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get personalized restaurant recommendations with filters for cuisine, location, and budget.">
+    <title>Get Recommendations — Flavour Finder</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -10,59 +17,145 @@
 <body>
 
     <!-- NAVBAR -->
-    <div class="navbar">
-        <h2>Restaurant Recommendation System</h2>
+    <nav class="navbar" id="mainNav">
+        <div class="navbar-brand">
+            <span class="brand-icon">🍽️</span>
+            <h2>Flavour Finder</h2>
+        </div>
         <div class="nav-links">
             <a href="/">Home</a>
-            <a href="/recommend">Recommend</a>
+            <a href="/recommend" class="active">Recommend</a>
         </div>
-    </div>
+    </nav>
 
     <!-- MAIN CONTENT -->
-    <div class="container-center">
+    <main class="recommend-page">
 
-        <h2>Restaurant Name</h2>
+        <!-- HEADER -->
+        <div class="recommend-header">
+            <h1>Find Your <span class="highlight">Perfect Match</span></h1>
+            <p>Select a restaurant you love and let our AI find similar ones for you</p>
+        </div>
 
-        <!-- FORM -->
-        <form action="/recommend" method="POST">
-            <input type="text" name="restaurant" placeholder="Enter restaurant name..." required>
-            <br><br>
-            <button type="submit" class="btn" onclick="showLoading()">
-                Click to see the recommendation
-            </button>
+        <!-- SEARCH & FILTER PANEL -->
+        <form action="/recommend" method="POST" id="recommendForm">
+            <div class="search-panel">
+
+                <!-- Restaurant Selection -->
+                <div class="search-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="restaurantSelect">🔍 Select Restaurant</label>
+                        <select name="restaurant" id="restaurantSelect" class="form-select" required>
+                            <option value="">— Choose a restaurant —</option>
+                            {% for rname in restaurant_names %}
+                            <option value="{{ rname }}" {% if name is defined and name == rname %}selected{% endif %}>{{ rname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filters Row -->
+                <div class="filter-row">
+                    <!-- Cuisine Filter -->
+                    <div class="form-group">
+                        <label for="cuisineSelect">🍳 Cuisine</label>
+                        <select name="cuisine" id="cuisineSelect" class="form-select">
+                            <option value="all">All Cuisines</option>
+                            {% for c in cuisines %}
+                            <option value="{{ c }}" {% if selected_cuisine is defined and selected_cuisine == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Location Filter -->
+                    <div class="form-group">
+                        <label for="locationSelect">📍 Locality</label>
+                        <select name="location" id="locationSelect" class="form-select">
+                            <option value="all">All Localities</option>
+                            {% for loc in locations %}
+                            <option value="{{ loc }}" {% if selected_location is defined and selected_location == loc %}selected{% endif %}>{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Budget Filter -->
+                    <div class="form-group">
+                        <label for="budgetSelect">💰 Budget (for two)</label>
+                        <select name="budget" id="budgetSelect" class="form-select">
+                            <option value="all">Any Budget</option>
+                            {% for b in budgets %}
+                            <option value="{{ loop.index0 }}" {% if selected_budget is defined and selected_budget == loop.index0|string %}selected{% endif %}>{{ b.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="search-submit">
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        ✨ Get Recommendations
+                    </button>
+                </div>
+
+            </div>
         </form>
 
-        <br><br>
-
-        <!-- ERROR MESSAGE -->
+        <!-- ERROR STATE -->
         {% if error %}
-            <p style="color:red; font-weight:bold;">{{ error }}</p>
+        <div class="error-message">
+            <span class="error-icon">😔</span>
+            <h3>No Matches Found</h3>
+            <p>{{ error }}</p>
+        </div>
         {% endif %}
 
         <!-- RESULTS -->
         {% if results %}
-            <h3>Here is Recommended Restaurants</h3>
+        <div class="results-section">
+            <div class="results-header">
+                <h2>Restaurants Like <span class="highlight">{{ name }}</span></h2>
+                <span class="results-count">{{ results|length }} results</span>
+            </div>
 
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Cuisines</th>
-                    <th>Mean Rating</th>
-                    <th>Cost</th>
-                </tr>
-
+            <div class="results-grid">
                 {% for r in results %}
-                <tr>
-                    <td>{{ r.name }}</td>
-                    <td>{{ r.cuisines }}</td>
-                    <td>{{ r['Mean Rating'] }}</td>
-                    <td>₹{{ r.cost }}</td>
-                </tr>
+                <div class="restaurant-card">
+                    <div class="card-header">
+                        <span class="card-name">{{ r.name }}</span>
+                        {% set rating = r['Mean Rating'] %}
+                        <span class="card-rating {% if rating < 3.0 %}low{% elif rating < 3.8 %}mid{% endif %}">
+                            ⭐ {{ "%.1f"|format(rating) }}
+                        </span>
+                    </div>
+
+                    <div class="card-cuisines">
+                        {% for cuisine in r.cuisines.split(', ')[:4] %}
+                        <span class="cuisine-tag">{{ cuisine }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="card-footer">
+                        <span class="card-cost">
+                            ₹{{ r.cost|int }}
+                            <span>for two</span>
+                        </span>
+                        <span class="card-location">
+                            📍 {{ r.location }}
+                        </span>
+                    </div>
+                </div>
                 {% endfor %}
-            </table>
+            </div>
+        </div>
         {% endif %}
 
-    </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span>© 2026 Flavour Finder — Restaurant Recommendation System</span>
+        <span>Built with ❤️ using Flask & Machine Learning</span>
+    </footer>
 
     <!-- JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
