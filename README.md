@@ -87,7 +87,7 @@ restaurant-recommender-system/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/eldrich-victoria/restaurant-recommendation-system.git
+git clone https://github.com/eldrich-victoria/flavour-finder-ai.git
 cd restaurant-recommendation-system
 ```
 
