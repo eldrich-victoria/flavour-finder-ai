@@ -7,30 +7,43 @@ env/
 ENV/
 
 # -----------------------------
-# 📁 Data (IMPORTANT)
-# -----------------------------
-data/
-*.csv
-*.xlsx
-*.json
-*.parquet
-
-# -----------------------------
-# 🧠 ML Models (optional - keep if large)
-# -----------------------------
-*.pkl
-*.joblib
-*.h5
-*.pt
-*.pth
-
-# -----------------------------
 # 🧾 Python Cache
 # -----------------------------
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 *.pyo
 *.pyd
+.pytest_cache/
+
+# -----------------------------
+# 📁 Data
+# -----------------------------
+# Ignore large raw dataset files
+data/*.csv
+data/*.xlsx
+data/*.json
+data/*.parquet
+
+# -----------------------------
+# 🧠 ML Models & Large Artifacts
+# -----------------------------
+# Ignore large model files and archives
+models.zip
+models/similarity.pkl
+
+# General ignore for other large model types
+*.joblib
+*.h5
+*.keras
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.bin
+
+# NOTE: models/restaurants.pkl is required for the application to run
+# and is small enough (3.9 MB) to be tracked. Do NOT ignore *.pkl globally.
 
 # -----------------------------
 # 🛠️ Logs & Temp Files
@@ -38,6 +51,8 @@ __pycache__/
 *.log
 *.tmp
 *.swp
+*.swo
+.cache/
 
 # -----------------------------
 # 🧪 Jupyter Notebook
@@ -45,15 +60,23 @@ __pycache__/
 .ipynb_checkpoints/
 
 # -----------------------------
-# ⚙️ Environment Variables
+# ⚙️ Environment Variables & Secrets
 # -----------------------------
 .env
+.env.*
+!.env.example
+secrets.json
+*.pem
+*.key
+credentials.*
+secrets.*
 
 # -----------------------------
 # 🖥️ OS Files
 # -----------------------------
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # -----------------------------
 # 🧑‍💻 IDE / Editor Files
@@ -67,60 +90,3 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
-
-# -----------------------------
-# 🔐 Secrets
-# -----------------------------
-secrets.json
-
-# Virtual Environment
-
-venv/
-.venv/
-env/
-ENV/
-
-# Data
-
-data/
-*.csv
-*.xlsx
-*.json
-*.parquet
-
-# ML Models (optional)
-
-*.pkl
-*.joblib
-*.h5
-*.pt
-*.pth
-
-# Python cache
-
-**pycache**/
-*.pyc
-
-# Logs
-
-*.log
-
-# Jupyter
-
-.ipynb_checkpoints/
-
-# Env files
-
-.env
-
-# IDE
-
-.vscode/
-.idea/
-
-# OS
-
-.DS_Store
-Thumbs.db
-
-project_analysis.md 

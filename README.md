@@ -1,125 +1,199 @@
-# 🍽️ Flavour Finder — Restaurant Recommendation System
+# 🍽️ Flavour Finder — AI-Powered Restaurant Recommendation Engine
 
-A full-stack web application that recommends restaurants similar to a user-selected restaurant using **content-based filtering**. Built on ~50,000 Bangalore restaurant listings from the Zomato dataset, the system uses NLP-based vectorization (`CountVectorizer`) and **cosine similarity** to find the closest matches — with optional filtering by cuisine, locality, and budget.
+> A full-stack, content-based recommendation system for Bangalore restaurants, built with Python, Flask, and scikit-learn, featuring a custom premium dark UI.
 
-## ✨ Key Features
+## Overview
 
-- **Content-based recommendation engine** — finds restaurants with similar cuisines and dining styles
-- **Smart search** — searchable dropdown with type-to-filter for 50,000+ restaurant names
-- **Advanced filters** — narrow results by cuisine type, Bangalore locality, and budget range
-- **Memory-efficient design** — computes similarity on-the-fly instead of loading a 4 GB precomputed matrix
-- **Premium dark UI** — glassmorphism, micro-animations, food image carousel, and card-based results
-- **Fully responsive** — optimized layouts for desktop, tablet, and mobile
-- **Client + server validation** — input checking on both sides with user-friendly error states
+Flavour Finder solves the "what to eat next" problem by providing highly relevant, content-based restaurant recommendations. Using a Zomato dataset of approximately 50,000 Bangalore eateries, the system takes a user's favorite restaurant and returns the top 10 most similar options. The recommendations can be further refined by cuisine, locality, and budget. 
 
-## 🧠 How It Works
+This project covers a complete end-to-end Machine Learning lifecycle: from raw CSV data processing, Exploratory Data Analysis (EDA), and feature engineering, to model vectorization, serialization, and finally, deployment via a Flask web application with a responsive, glassmorphism-styled frontend.
 
-### Training Phase (Notebook)
+## Summary
 
-1. Load the raw Zomato dataset (`data/zomato.csv`)
-2. Select and clean relevant columns: `name`, `cuisines`, `rate`, `cost`, `rest_type`, `location`
-3. Engineer a `tags` feature by combining `cuisines` + `rest_type` (lowercased)
-4. Vectorize the tags using `CountVectorizer` with 5,000 features and English stop-word removal
-5. Serialize the cleaned DataFrame as `models/restaurants.pkl`
+* **Problem Solved:** Finding similar restaurants based on cuisine and establishment type across a massive dataset of 50K+ entries.
+* **Technical Approach:** Content-based filtering using Natural Language Processing (NLP) bag-of-words techniques and cosine similarity.
+* **Architecture:** Flask backend serving a custom-built Vanilla JS/CSS frontend, with an on-the-fly similarity computation engine to optimize memory.
+* **Important Technologies:** Python, scikit-learn, Pandas, NumPy, Flask, HTML5/CSS3/JS.
+* **Skills Demonstrated:** NLP feature engineering, memory-aware model deployment, full-stack web development without frameworks, data pipeline construction.
+* **Current Status:** Fully functional local prototype.
 
-### Runtime Phase (Flask App)
+## Key Features
 
-1. Load `restaurants.pkl` at startup
-2. Rebuild the vectorizer and sparse feature matrix in memory
-3. Pre-compute all filter dropdown options (cuisines, locations, budget brackets)
-4. On user request, compute cosine similarity for **only the selected restaurant** (1×N operation)
-5. Apply user-selected filters, return the top 10 matching restaurants
+* **Content-Based Filtering:** Uses cosine similarity over a `CountVectorizer` bag-of-words representation of engineered cuisine and restaurant-type tags.
+* **Memory-Efficient Inference:** Computes a per-request `1×N` sparse cosine similarity vector instead of loading a precomputed 4.2 GB matrix into memory.
+* **Multi-Level Post-Filtering:** Refines algorithmic recommendations by cuisine, locality, and budget brackets (₹0 – ₹3000+).
+* **Custom Searchable Dropdown:** A bespoke JavaScript widget filters 50,000+ restaurant names entirely client-side without API round-trips.
+* **JSON Autocomplete API:** A REST endpoint (`GET /api/restaurants?q=`) that returns matching names.
+* **Premium UI/UX:** A responsive dark-themed interface featuring glassmorphism, animated carousels, and scroll-reveals built entirely with Vanilla CSS and JS.
 
-## 📊 Exploratory Data Analysis
+## Architecture / System Design
 
-The EDA notebook (`notebooks/eda.ipynb`) reveals key dataset insights:
+```mermaid
+flowchart TB
+    subgraph Data Pipeline ["Data Pipeline (Jupyter)"]
+        A["Raw Data<br/>(zomato.csv)"] --> B["Data Cleaning<br/>(NaN handling, normalization)"]
+        B --> C["Feature Engineering<br/>(tags = cuisines + rest_type)"]
+        C --> D["Vectorization<br/>(CountVectorizer)"]
+        D --> E["Serialization<br/>(restaurants.pkl)"]
+    end
 
-- **North Indian** is the most common cuisine (~20,000 listings), followed by Chinese and South Indian
-- Restaurant ratings follow a roughly normal distribution centered around **3.7/5.0**
-- Top-rated restaurants score **4.8–4.9** out of 5.0
-- **Cafe Coffee Day** is the most frequently listed chain with 96 outlets across Bangalore
+    subgraph Runtime ["Flask Backend (app.py)"]
+        E -->|"Load Data"| F["Startup Pre-computation<br/>(Rebuild Vectorizer, Dropdowns)"]
+        G["User Input<br/>(Restaurant + Filters)"] --> H["recommend() Function"]
+        F --> H
+        H --> I["Cosine Similarity (1×N)<br/>On-the-fly Sparse Matrix"]
+        I --> J["Top 50 Ranking"]
+        J --> K["Apply Filters<br/>(Cuisine, Location, Budget)"]
+        K --> L["Top 10 Results"]
+    end
 
-EDA visualizations are saved in the `visuals/` directory.
+    subgraph Frontend ["Vanilla HTML/CSS/JS"]
+        L --> M["Render Glassmorphism Cards"]
+    end
+```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Backend** | Python, Flask |
-| **ML/NLP** | scikit-learn (`CountVectorizer`, `cosine_similarity`), Pandas, NumPy |
-| **Frontend** | HTML5, CSS3 (custom dark theme), Vanilla JavaScript |
-| **Fonts** | Inter, Playfair Display (Google Fonts) |
-| **EDA** | Jupyter Notebook, Matplotlib, Seaborn |
+* **Programming Language:** Python 3.10+
+* **Machine Learning / NLP:** scikit-learn 1.4.2 (`CountVectorizer`, `cosine_similarity`)
+* **Data Processing:** Pandas 2.2.2, NumPy 1.26.4
+* **Exploratory Data Analysis:** Matplotlib 3.8.4, Seaborn 0.13.2
+* **Backend Framework:** Flask 3.0.3 (Jinja2 templating)
+* **Frontend:** HTML5, Vanilla CSS (968 lines), Vanilla JS (266 lines)
+* **Serialization:** pickle
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
-restaurant-recommender-system/
-├── app.py                      # Flask server — routes, recommendation logic, API
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project documentation
-│
-├── data/
-│   └── zomato.csv              # Source Zomato dataset (~574 MB)
-│
+flavour-finder-ai/
+├── app.py                  # Core Flask server, routing, and recommendation logic
+├── requirements.txt        # Python dependencies
 ├── models/
-│   ├── restaurants.pkl         # Preprocessed restaurant DataFrame (used at runtime)
-│   └── similarity.pkl          # Precomputed similarity matrix (legacy, not used at runtime)
-│
+│   ├── restaurants.pkl     # Preprocessed DataFrame loaded at runtime (3.9 MB)
+│   └── similarity.pkl      # Precomputed full matrix — generated but NOT used (4.2 GB)
 ├── notebooks/
-│   ├── eda.ipynb               # Exploratory Data Analysis with visualizations
-│   └── model.ipynb             # Data cleaning, feature engineering, model building
-│
+│   ├── model.ipynb         # Pipeline: Data cleaning, feature engineering, vectorization
+│   └── eda.ipynb           # Exploratory Data Analysis & visualizations
 ├── static/
-│   ├── css/main.css            # Premium dark-theme design system (~970 lines)
-│   ├── js/main.js              # Carousel, searchable select, form validation, scroll effects
-│   └── images/                 # Food carousel images and UI assets
-│
-├── templates/
-│   ├── index.html              # Landing page with hero section and carousel
-│   └── web.html                # Recommendation form, filters, and results cards
-│
-└── visuals/                    # EDA chart outputs (cuisine frequency, ratings, etc.)
+│   ├── css/main.css        # Custom dark design system (no CSS frameworks)
+│   ├── js/main.js          # Client-side logic, carousel, searchable dropdown
+│   └── images/             # UI assets
+└── templates/
+    ├── index.html          # Landing page
+    └── web.html            # Main recommendation application interface
 ```
 
-## 🚀 Installation
+## Core Workflow
 
-### 1. Clone the repository
+1. **Input:** The user selects a restaurant they like from a searchable dropdown and optionally sets cuisine, location, and budget filters.
+2. **Processing:** The Flask server looks up the index of the selected restaurant.
+3. **Algorithmic Logic:** `app.py` calculates a `1×N` cosine similarity between the selected restaurant's feature vector and the entire dataset's sparse matrix.
+4. **Transformation:** The system identifies the top 50 most similar restaurants, then iteratively applies the user's filters (cuisine string matching, location exact match, budget range check).
+5. **Output:** The filtered top 10 results are passed to the Jinja2 template and rendered as stylized cards.
+
+## Implementation Details
+
+* **Feature Engineering:** The recommendation signal relies on concatenating the `cuisines` and `rest_type` columns into a single lowercase `tags` string (e.g., "north indian, chinese casual dining").
+* **State Management:** Filter data (unique cuisines, locations, budget brackets) is computed precisely once at application startup to avoid redundant Pandas `unique()` operations during web requests.
+* **Graceful Degradation:** By fetching the top 50 algorithmic matches before applying strict heuristic filters, the system ensures a robust top 10 is still returned even when narrow budget or location constraints are applied.
+
+## Algorithms & Models
+
+* **CountVectorizer:** Translates the text-based `tags` feature into a numerical bag-of-words matrix, with a ceiling of 5,000 features to control dimensionality. Stop-words are filtered out to remove noise. Term frequency weighting (TF-IDF) was deliberately avoided as tags are categorical labels rather than prose.
+* **Cosine Similarity:** Measures the cosine of the angle between two multi-dimensional vectors. In this context, it calculates the distance between the reference restaurant's feature vector and all other restaurant vectors, assigning a score from 0 (completely dissimilar) to 1 (identical features).
+
+## Exploratory Data Analysis (EDA)
+
+The `notebooks/eda.ipynb` notebook provides insights into the Bangalore food landscape:
+* **Cuisine Dominance:** North Indian cuisine is the most prevalent (~21,000 listings), followed by Chinese (~15,500) and South Indian.
+* **Rating Distribution:** Restaurant ratings follow a normal distribution centered around 3.7/5.0, with very few establishments scoring below 2.5 or above 4.8.
+* **Chain Presence:** Cafe Coffee Day operates the highest number of outlets (96), followed closely by Onesta and Just Bake.
+
+## Data Source
+
+**Dataset:** [Zomato Bangalore Restaurants](https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants)
+
+**Source:** [Kaggle](https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants)
+
+**License:** Data files © Original Authors
+
+**Usage:** Provides the restaurant listing data, including cuisines and establishment types, used to generate the content-based recommendations.
+
+* **Size:** ~574 MB raw CSV, ~50,000 listings.
+* **Features Used:** `name`, `cuisines`, `rate` (normalized to float), `approx_cost` (normalized to float), `rest_type`, `location`.
+* **Storage Approach:** The cleaned, essential data is serialized into a 3.9 MB `restaurants.pkl` file, acting as an in-memory database for the Flask application.
+
+## API
+
+The application exposes a lightweight JSON endpoint to power the client-side autocomplete feature:
+
+**`GET /api/restaurants`**
+* **Purpose:** Returns a list of restaurant names matching a query string.
+* **Query Params:** `q` (string, minimum 2 characters)
+* **Response:** JSON array of up to 20 matching string names.
+
+## Security & Validation
+
+* **Input Validation:** The backend performs explicit type checking on budget boundaries and location existence before querying the dataset.
+* **Client-Side Restrictions:** The frontend prevents empty form submissions and flashes visual error states to guide correct user behavior.
+
+## Performance / Optimization
+
+* **Memory Optimization (Crucial):** The initial Jupyter notebook computes an $N \times N$ similarity matrix resulting in a 4.2 GB `.pkl` file. Loading this into a Flask web worker is highly inefficient. Instead, `app.py` loads only the 3.9 MB DataFrame, reconstructs the `CountVectorizer` sparse matrix at startup, and performs a rapid `1×N` similarity calculation dynamically per request.
+* **Client-Side Processing:** The searchable restaurant dropdown handles filtering 50K options entirely via JavaScript, minimizing server load and eliminating network latency for UI interactions.
+
+## Challenges & Engineering Decisions
+
+* **Challenge:** Displaying 50,000+ restaurant names in a standard HTML `<select>` element caused severe browser lag and unresponsiveness.
+* **Decision:** Built a custom Vanilla JS searchable input component.
+* **Trade-off:** Requires more complex client-side state management but guarantees a smooth, 60fps user experience without requiring pagination API endpoints.
+
+* **Challenge:** Balancing recommendation accuracy with real-world usability.
+* **Decision:** Implemented a two-stage approach: strict algorithmic similarity first (top 50), followed by heuristic filtering (cuisine/location/budget).
+* **Solution:** Ensures that a user asking for "budget Chinese like Restaurant X" gets the most similar matches *that actually fit their wallet*, rather than highly similar but expensive restaurants.
+
+## Testing
+
+* **Status:** No formal automated testing suite currently exists.
+* **Validation:** All components (data processing, model inference, web application, and API) have been manually verified, with edge cases (like missing tags and extreme budget limits) handled via server-side fallbacks.
+
+## Limitations
+
+* **Purely Content-Based:** The system lacks collaborative filtering; it does not factor in user personalization, review sentiment, or historical user interactions.
+* **Tag Sparsity:** Restaurants with missing or overly brief cuisine/type data yield weaker similarity scores.
+* **Deployment Configuration:** The Flask application currently runs with `debug=True` and relies on the built-in Werkzeug server, making it unsuitable for immediate production traffic.
+* **Dependency Clutter:** The `requirements.txt` file contains unused dependencies (`fastapi`, `uvicorn`) that should be removed.
+
+## Future Improvements
+
+* **Hybrid Recommendation Engine:** Integrate user rating signals to combine collaborative filtering with the existing content-based approach.
+* **Production Deployment:** Containerize the application via Docker and deploy using a production WSGI server (e.g., Gunicorn) behind Nginx.
+* **Automated Test Suite:** Implement `pytest` coverage for the core `recommend()` function and Flask routes.
+* **Geolocation:** Incorporate geospatial data to prioritize recommendations geographically close to the user.
+
+## How to Run
 
 ```bash
+# 1. Clone the repository
 git clone https://github.com/eldrich-victoria/flavour-finder-ai.git
-cd restaurant-recommendation-system
-```
+cd flavour-finder-ai
 
-### 2. Create and activate a virtual environment
-
-**Windows:**
-```bash
+# 2. Setup virtual environment
 python -m venv .venv
-.venv\Scripts\activate
-```
+# Windows: .venv\Scripts\activate
+# Unix: source .venv/bin/activate
 
-**macOS / Linux:**
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-### 3. Install dependencies
-
-```bash
+# 3. Install dependencies
 pip install -r requirements.txt
-```
 
-### 4. Ensure model files exist
+# 4. Generate the models (Ensure data/zomato.csv is present)
+# Run all cells in notebooks/model.ipynb to generate models/restaurants.pkl
 
-The app requires `models/restaurants.pkl` to run. If it's missing, regenerate it by running the `notebooks/model.ipynb` notebook (requires `data/zomato.csv`).
-
-## ▶️ Running the Application
-
-```bash
+# 5. Start the Flask server
 python app.py
+# Access at http://127.0.0.1:5000
 ```
+
 
 Then open your browser and visit: **http://127.0.0.1:5000/**
 
