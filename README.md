@@ -1,4 +1,6 @@
-# 🍽️ Flavour Finder — AI-Powered Restaurant Recommendation Engine
+# <center>🍽️ Flavour Finder</center>
+
+**<center>AI-Powered Restaurant Recommendation Engine</center>**
 
 > A full-stack, content-based recommendation system for Bangalore restaurants, built with Python, Flask, and scikit-learn, featuring a custom premium dark UI.
 
@@ -26,7 +28,7 @@ This project covers a complete end-to-end Machine Learning lifecycle: from raw C
 * **JSON Autocomplete API:** A REST endpoint (`GET /api/restaurants?q=`) that returns matching names.
 * **Premium UI/UX:** A responsive dark-themed interface featuring glassmorphism, animated carousels, and scroll-reveals built entirely with Vanilla CSS and JS.
 
-## Architecture / System Design
+## Architecture 
 
 ```mermaid
 flowchart TB
@@ -66,22 +68,61 @@ flowchart TB
 
 ```text
 flavour-finder-ai/
-├── app.py                  # Core Flask server, routing, and recommendation logic
-├── requirements.txt        # Python dependencies
+├── .git/
+├── .venv/
+├── data/
+│   └── zomato.csv
 ├── models/
-│   ├── restaurants.pkl     # Preprocessed DataFrame loaded at runtime (3.9 MB)
-│   └── similarity.pkl      # Precomputed full matrix — generated but NOT used (4.2 GB)
+│   ├── restaurants.pkl
+│   └── similarity.pkl
 ├── notebooks/
-│   ├── model.ipynb         # Pipeline: Data cleaning, feature engineering, vectorization
-│   └── eda.ipynb           # Exploratory Data Analysis & visualizations
+│   ├── eda.ipynb
+│   └── model.ipynb
+├── screenshots/
+│   ├── Home-page.png
+│   ├── Prediction-outcome.png
+│   ├── Prediction-page.png
+│   └── Project-description.png
 ├── static/
-│   ├── css/main.css        # Custom dark design system (no CSS frameworks)
-│   ├── js/main.js          # Client-side logic, carousel, searchable dropdown
-│   └── images/             # UI assets
-└── templates/
-    ├── index.html          # Landing page
-    └── web.html            # Main recommendation application interface
+│   ├── css/
+│   │   └── main.css
+│   ├── images/
+│   │   ├── food.gif
+│   │   ├── food.png
+│   │   ├── food_burger.png
+│   │   ├── food_curry.png
+│   │   ├── food_dessert.png
+│   │   ├── food_dimsum.png
+│   │   └── food_pizza.png
+│   └── js/
+│       └── main.js
+├── templates/
+│   ├── index.html
+│   └── web.html
+├── visuals/
+│   ├── cuisine_freq.png
+│   ├── rating_distribution.png
+│   ├── top_rated.png
+│   └── top_restaurants.png
+├── .gitignore
+├── README.md
+├── app.py
+├── models.zip
+├── project_summary.md
+└── requirements.txt
 ```
+
+- `data/` — Contains the raw project dataset (`zomato.csv`).
+- `models/` — Serialized data (`restaurants.pkl`) and precomputed similarity matrix for the application.
+- `notebooks/` — Jupyter notebooks for data cleaning, EDA, and feature engineering.
+- `screenshots/` — Images showcasing the web application interface and user flow.
+- `static/` — Frontend assets including custom CSS, images, and JavaScript logic.
+- `templates/` — HTML Jinja2 templates for the Flask application.
+- `visuals/` — Charts and graphs generated during Exploratory Data Analysis.
+- `app.py` — Core Flask server, routing, and recommendation logic.
+- `models.zip` — Compressed archive of the large precomputed model files.
+- `project_summary.md` — Detailed summary and overview of the project.
+- `requirements.txt` — Python dependencies needed to run the application.
 
 ## Core Workflow
 
@@ -123,15 +164,6 @@ The `notebooks/eda.ipynb` notebook provides insights into the Bangalore food lan
 * **Features Used:** `name`, `cuisines`, `rate` (normalized to float), `approx_cost` (normalized to float), `rest_type`, `location`.
 * **Storage Approach:** The cleaned, essential data is serialized into a 3.9 MB `restaurants.pkl` file, acting as an in-memory database for the Flask application.
 
-## API
-
-The application exposes a lightweight JSON endpoint to power the client-side autocomplete feature:
-
-**`GET /api/restaurants`**
-* **Purpose:** Returns a list of restaurant names matching a query string.
-* **Query Params:** `q` (string, minimum 2 characters)
-* **Response:** JSON array of up to 20 matching string names.
-
 ## Security & Validation
 
 * **Input Validation:** The backend performs explicit type checking on budget boundaries and location existence before querying the dataset.
@@ -156,13 +188,6 @@ The application exposes a lightweight JSON endpoint to power the client-side aut
 
 * **Status:** No formal automated testing suite currently exists.
 * **Validation:** All components (data processing, model inference, web application, and API) have been manually verified, with edge cases (like missing tags and extreme budget limits) handled via server-side fallbacks.
-
-## Limitations
-
-* **Purely Content-Based:** The system lacks collaborative filtering; it does not factor in user personalization, review sentiment, or historical user interactions.
-* **Tag Sparsity:** Restaurants with missing or overly brief cuisine/type data yield weaker similarity scores.
-* **Deployment Configuration:** The Flask application currently runs with `debug=True` and relies on the built-in Werkzeug server, making it unsuitable for immediate production traffic.
-* **Dependency Clutter:** The `requirements.txt` file contains unused dependencies (`fastapi`, `uvicorn`) that should be removed.
 
 ## Future Improvements
 
@@ -206,15 +231,6 @@ Then open your browser and visit: **http://127.0.0.1:5000/**
 5. **Submit** → Click "Get Recommendations" to view the top 10 similar restaurants as styled cards
 6. **Review** → Each card shows the restaurant name, cuisine tags, rating (color-coded), cost for two, and location
 
-## 🔗 API Endpoints
-
-| Route | Method | Description |
-|-------|--------|-------------|
-| `/` | `GET` | Landing page with hero section and food carousel |
-| `/recommend` | `GET` | Recommendation form with search and filter dropdowns |
-| `/recommend` | `POST` | Process form submission and return recommendation results |
-| `/api/restaurants` | `GET` | JSON autocomplete API — accepts `?q=` query param (min 2 chars, returns top 20 matches) |
-
 ## 📋 Recommendation Output
 
 Each recommendation card displays:
@@ -236,13 +252,6 @@ The UI features a premium dark-mode design system:
 - **Effects** — Glassmorphism panels, backdrop blur, glow shadows, gradient accents
 - **Animations** — `fadeInUp` entrance animations, staggered card reveals, carousel crossfade, scroll-triggered step cards
 - **Responsiveness** — Three breakpoints (1024px, 768px, 480px) for full device coverage
-
-## ⚠️ Known Limitations
-
-- Recommendations are based solely on cuisine and restaurant type tags — user preferences, reviews, and location proximity are not factored in
-- Restaurant name matching requires an exact selection from the dropdown; free-text input with typos will not match
-- The `similarity.pkl` file (4.2 GB) is generated by the notebook but is **not used** by the Flask app at runtime
-- The application runs with `debug=True`, which is suitable for development but not for production deployment
 
 ## 🔮 Future Scope
 
