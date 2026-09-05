@@ -90,3 +90,10 @@ desktop.ini
 build/
 dist/
 *.egg-info/
+
+# -----------------------------
+# 📝 Other files 
+# -----------------------------
+project_summary.md
+models/
+*.zip
